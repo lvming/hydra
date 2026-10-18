@@ -522,7 +522,13 @@ func (p *DefaultProvider) AdminURL(ctx context.Context) *url.URL {
 }
 
 func (p *DefaultProvider) IssuerURL(ctx context.Context) *url.URL {
-	return p.getProvider(ctx).RequestURIF(KeyIssuerURL, p.fallbackURL(ctx, "/", p.ServePublic(ctx)))
+	issuerURL := p.getProvider(ctx).RequestURIF(KeyIssuerURL, p.fallbackURL(ctx, "/", p.ServePublic(ctx)))
+	if host, ok := ctx.Value("Host").(string); ok {
+		if issuerURL.Host == "localhost" {
+			issuerURL.Host = host
+		}
+	}
+	return issuerURL
 }
 
 func (p *DefaultProvider) KratosAdminURL(ctx context.Context) (*url.URL, bool) {

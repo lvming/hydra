@@ -202,6 +202,8 @@ func publicServer(ctx context.Context, d *driver.RegistrySQL, sqaMetrics *metric
 		logger,
 	)
 
+	n.UseFunc(hostMiddleware)
+
 	if cfg.TLS.Enabled && !networkx.AddressIsUnixSocket(cfg.Host) {
 		mw, err := tlsx.EnforceTLSRequests(d, cfg.TLS.AllowTerminationFrom)
 		if err != nil {
